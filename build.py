@@ -61,7 +61,9 @@ def build():
         elif os.path.isdir(src):
             shutil.copytree(src, dst, dirs_exist_ok=True)
 
-    open(os.path.join(BUILD_DIR, '.nojekyll'), 'w').close()
+    # Marker file for static hosting (no Jekyll processing)
+    with open(os.path.join(BUILD_DIR, '.nojekyll'), 'w'):
+        pass
 
     total_files = sum(len(f) for _, _, f in os.walk(BUILD_DIR))
     print(f"\n{'=' * 60}")

@@ -17,8 +17,6 @@ from ai_engine import EnsemblePredictor, train_and_predict_all
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
 CORS(app)
 
-PREDICTIONS_CACHE = {}
-
 
 @app.route('/')
 def index():
@@ -137,7 +135,9 @@ def get_analysis(game_type):
     data = load_data(f'{game_type}.json')
     if data:
         from ai_engine import StatisticalPredictor
-        max_num = 55 if game_type == 'power655' else 45
+        from scraper import GAME_CONFIG
+        cfg = GAME_CONFIG.get(game_type, {})
+        max_num = cfg.get('max_number', 55)
         predictor = StatisticalPredictor(max_num)
         draws = [item['numbers'] for item in data if isinstance(item.get('numbers'), list)]
         analysis = predictor.analyze(draws)

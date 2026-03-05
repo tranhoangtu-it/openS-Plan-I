@@ -1,4 +1,5 @@
 # Build output
+dist/
 
 # Data (generated during build)
 data/

@@ -14,20 +14,10 @@ import torch
 import torch.nn as nn
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 
-DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data')
+from scraper import GAME_CONFIG, DATA_DIR
+
 MODELS_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'models')
 os.makedirs(MODELS_DIR, exist_ok=True)
-
-# Game configuration
-GAME_CONFIG = {
-    'power655':  {'max_number': 55, 'pick_count': 6,  'has_power': True,  'digit_game': False},
-    'mega645':   {'max_number': 45, 'pick_count': 6,  'has_power': False, 'digit_game': False},
-    'keno':      {'max_number': 80, 'pick_count': 10, 'has_power': False, 'digit_game': False},
-    'max3d':     {'max_number': 999,'pick_count': 3,  'has_power': False, 'digit_game': True},
-    'max3dplus': {'max_number': 999,'pick_count': 6,  'has_power': False, 'digit_game': True},
-    'bingo18':   {'max_number': 18, 'pick_count': 3,  'has_power': False, 'digit_game': False},
-    'power535':  {'max_number': 35, 'pick_count': 5,  'has_power': True,  'digit_game': False},
-}
 
 # ============================================================
 # 1. LSTM Neural Network
@@ -56,14 +46,6 @@ class LSTMPredictor:
         self.model = None
 
     def prepare_data(self, draws):
-        binary = np.array([
-            np.array([1 if (n-1) == j else 0 for j in range(self.max_number)] if isinstance(draws[0][0], int) else
-                     [0]*self.max_number)
-            for draw in draws
-            for n in [0]  # dummy
-        ]) if False else None  # placeholder
-
-        # Build binary matrix properly
         matrix = []
         for draw in draws:
             vec = np.zeros(self.max_number)
